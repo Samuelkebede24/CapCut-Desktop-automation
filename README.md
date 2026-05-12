@@ -8,7 +8,11 @@
     pip install -r requirements.txt
     ```
 3.  **Configure Paths**: Open `config/config.json` and update `capcut_path` to your CapCut installation path.
-4.  **Assets**: Place screenshots of CapCut buttons into `src/assets/buttons/`.
+4.  **Assets**: The bot requires screenshots of CapCut buttons to function. Run the capture tool to generate them:
+    ```bash
+    python src/utils/capture_tool.py
+    ```
+    Follow the on-screen instructions to hover over each button and press 'S' to capture.
 5.  **Tesseract OCR**: Install [Tesseract OCR](https://github.com/UB-Mannheim/tesseract/wiki) and ensure it's in your system PATH.
 
 ## Folder Structure

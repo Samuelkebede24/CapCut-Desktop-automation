@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import pyautogui
+import os
 import pytesseract
 from PIL import Image
 import time
@@ -19,10 +20,14 @@ class VisionEngine:
 
     def find_image(self, template_path, region=None):
         """Finds an image on screen and returns its center coordinates."""
+        if not os.path.exists(template_path):
+            logger.error(f"Asset file MISSING from disk: {template_path}")
+            return None
+
         screen = self.capture_screen()
         template = cv2.imread(template_path)
         if template is None:
-            logger.error(f"Template image not found: {template_path}")
+            logger.error(f"Failed to load image (corrupt?): {template_path}")
             return None
 
         res = cv2.matchTemplate(screen, template, cv2.TM_CCOEFF_NORMED)
@@ -65,12 +70,19 @@ class VisionEngine:
         text = pytesseract.image_to_string(screenshot)
         return text.strip()
 
-    def find_text_and_click(self, text, region=None):
-        """Very basic OCR-based clicking (complex to implement perfectly without specific regions)"""
-        # This is a placeholder for more advanced OCR logic if needed
-        full_text = self.read_text(region)
-        if text.lower() in full_text.lower():
-            logger.info(f"Detected text '{text}' on screen.")
-            # Finding exact coordinates from OCR requires image_to_data
-            return True
+    def find_text_and_click(self, target_text, region=None):
+        """Finds text on screen and clicks it."""
+        screenshot = pyautogui.screenshot(region=region) if region else pyautogui.screenshot()
+        data = pytesseract.image_to_data(screenshot, output_type=pytesseract.Output.DICT)
+
+        offset_x = region[0] if region else 0
+        offset_y = region[1] if region else 0
+
+        for i, text in enumerate(data['text']):
+            if target_text.lower() in text.lower():
+                x = data['left'][i] + data['width'][i] // 2 + offset_x
+                y = data['top'][i] + data['height'][i] // 2 + offset_y
+                pyautogui.click(x, y)
+                logger.info(f"Clicked text '{target_text}' at ({x}, {y})")
+                return True
         return False

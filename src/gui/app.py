@@ -4,6 +4,11 @@ import queue
 import time
 import os
 import json
+try:
+    import pyautogui
+except ImportError:
+    pyautogui = None
+from PIL import Image, ImageTk
 from src.utils.logger import setup_logger
 from src.engine.automation import CapCutAutomation
 
@@ -12,7 +17,7 @@ class CapCutGUI(ctk.CTk):
         super().__init__()
 
         self.title("CapCut Desktop Automation")
-        self.geometry("900x600")
+        self.geometry("1000x800")
 
         # Load Config
         with open('config/config.json', 'r') as f:
@@ -55,8 +60,14 @@ class CapCutGUI(ctk.CTk):
         self.progress_bar.pack(fill="x", padx=20, pady=10)
         self.progress_bar.set(0)
 
+        # Live Preview
+        self.preview_label = ctk.CTkLabel(self.main_frame, text="Live Preview", font=("Arial", 14))
+        self.preview_label.pack(pady=5)
+        self.preview_canvas = ctk.CTkLabel(self.main_frame, text="", height=200, fg_color="black")
+        self.preview_canvas.pack(fill="x", padx=20, pady=5)
+
         # Logs
-        self.log_text = ctk.CTkTextbox(self.main_frame, height=300)
+        self.log_text = ctk.CTkTextbox(self.main_frame, height=200)
         self.log_text.pack(fill="both", padx=20, pady=20, expand=True)
 
     def update_logs(self):
@@ -67,7 +78,17 @@ class CapCutGUI(ctk.CTk):
                 self.log_text.see("end")
         except queue.Empty:
             pass
-        self.after(100, self.update_logs)
+
+        # Update Preview
+        try:
+            screenshot = pyautogui.screenshot()
+            screenshot.thumbnail((400, 225))
+            self.preview_img = ImageTk.PhotoImage(screenshot)
+            self.preview_canvas.configure(image=self.preview_img)
+        except:
+            pass
+
+        self.after(200, self.update_logs)
 
     def start_automation(self):
         self.automation.stop_requested = False
