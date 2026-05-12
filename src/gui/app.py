@@ -49,7 +49,10 @@ class CapCutGUI(ctk.CTk):
         self.stop_btn.pack(pady=10, padx=20)
 
         self.capture_btn = ctk.CTkButton(self.sidebar, text="Launch Capture Tool", command=self.launch_capture_tool, fg_color="green")
-        self.capture_btn.pack(pady=20, padx=20)
+        self.capture_btn.pack(pady=10, padx=20)
+
+        self.launch_cc_btn = ctk.CTkButton(self.sidebar, text="Launch CapCut", command=self.launch_capcut_manual)
+        self.launch_cc_btn.pack(pady=10, padx=20)
 
         # Main Content
         self.main_frame = ctk.CTkFrame(self)
@@ -111,6 +114,11 @@ class CapCutGUI(ctk.CTk):
         # Use subprocess to run as a separate module
         import subprocess
         subprocess.Popen(["python", "-m", "src.utils.capture_tool"])
+
+    def launch_capcut_manual(self):
+        self.logger.info("Manually launching CapCut...")
+        if not self.automation.start_capcut():
+            self.logger.error("Failed to launch CapCut. Check your path in config/config.json")
 
     def run_automation_loop(self):
         self.logger.info("Automation started.")

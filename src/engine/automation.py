@@ -22,14 +22,27 @@ class CapCutAutomation:
             raise Exception("Automation stopped by user")
 
     def start_capcut(self):
-        logger.info("Starting CapCut...")
+        capcut_path = self.config['paths']['capcut_path']
+        logger.info(f"Starting CapCut from: {capcut_path}")
+        if not os.path.exists(capcut_path):
+            logger.error(f"CapCut executable NOT FOUND at: {capcut_path}")
+            return False
+
         try:
-            self.app = Application(backend="uia").start(self.config['paths']['capcut_path'])
-            time.sleep(5) # Wait for splash screen
+            # Try starting with pywinauto
+            self.app = Application(backend="uia").start(capcut_path)
+            time.sleep(10) # Wait for splash screen
             return True
         except Exception as e:
-            logger.error(f"Failed to start CapCut: {e}")
-            return False
+            logger.warning(f"Pywinauto start failed, trying subprocess: {e}")
+            try:
+                import subprocess
+                subprocess.Popen([capcut_path])
+                time.sleep(10)
+                return True
+            except Exception as e2:
+                logger.error(f"Total failure starting CapCut: {e2}")
+                return False
 
     def create_new_project(self):
         logger.info("Creating new project...")
@@ -192,8 +205,10 @@ class CapCutAutomation:
 
     def is_capcut_running(self):
         try:
-            # Check if CapCut process exists
-            return "CapCut.exe" in os.popen('tasklist').read()
+            import subprocess
+            # Use tasklist to find the process
+            output = subprocess.check_output('tasklist /FI "IMAGENAME eq CapCut.exe"', shell=True).decode()
+            return "CapCut.exe" in output
         except:
             return False
 
