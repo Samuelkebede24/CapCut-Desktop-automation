@@ -1,0 +1,8 @@
+pyautogui
+opencv-python
+pytesseract
+customtkinter
+pywinauto
+watchdog
+Pillow
+pytest

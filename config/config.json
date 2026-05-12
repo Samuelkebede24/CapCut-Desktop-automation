@@ -1,0 +1,28 @@
+{
+    "paths": {
+        "watch_folder": "./input_videos",
+        "output_folder": "./output_videos",
+        "capcut_path": "C:\\Path\\To\\CapCut.exe",
+        "assets_path": "./src/assets"
+    },
+    "filters": {
+        "enhancement": "4K",
+        "cinematic": "September Sunset"
+    },
+    "captions": {
+        "font": "ZY Brief",
+        "size": 8
+    },
+    "export": {
+        "resolution": "2K",
+        "quality": "Higher",
+        "codec": "H.264",
+        "format": "MOV",
+        "fps": 30
+    },
+    "automation": {
+        "retry_count": 3,
+        "wait_timeout": 10,
+        "debug_mode": true
+    }
+}
