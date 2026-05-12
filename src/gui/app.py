@@ -48,6 +48,9 @@ class CapCutGUI(ctk.CTk):
         self.stop_btn = ctk.CTkButton(self.sidebar, text="Stop", command=self.stop_automation, fg_color="red")
         self.stop_btn.pack(pady=10, padx=20)
 
+        self.capture_btn = ctk.CTkButton(self.sidebar, text="Launch Capture Tool", command=self.launch_capture_tool, fg_color="green")
+        self.capture_btn.pack(pady=20, padx=20)
+
         # Main Content
         self.main_frame = ctk.CTkFrame(self)
         self.main_frame.grid(row=0, column=1, sticky="nsew", padx=20, pady=20)
@@ -103,12 +106,22 @@ class CapCutGUI(ctk.CTk):
         self.automation.stop_requested = True
         self.logger.info("Stop requested...")
 
+    def launch_capture_tool(self):
+        self.logger.info("Launching Capture Tool...")
+        # Use subprocess to run as a separate module
+        import subprocess
+        subprocess.Popen(["python", "-m", "src.utils.capture_tool"])
+
     def run_automation_loop(self):
         self.logger.info("Automation started.")
         watch_folder = self.config['paths']['watch_folder']
 
         if not os.path.exists(watch_folder):
             os.makedirs(watch_folder)
+
+        processed_dir = os.path.join(watch_folder, "processed")
+        if not os.path.exists(processed_dir):
+            os.makedirs(processed_dir)
 
         while not self.automation.stop_requested:
             videos = [f for f in os.listdir(watch_folder) if f.endswith(('.mp4', '.mov', '.avi'))]
@@ -122,7 +135,9 @@ class CapCutGUI(ctk.CTk):
 
                     if self.automation.process_video(video_path):
                         self.logger.info(f"Successfully processed {video}")
-                        # Move to processed/completed if needed
+                        # Move to processed folder to prevent re-processing
+                        dest_path = os.path.join(processed_dir, video)
+                        os.rename(video_path, dest_path)
                     else:
                         self.logger.error(f"Failed to process {video}")
 
