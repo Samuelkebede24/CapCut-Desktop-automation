@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+*$py.class
+input_videos/*
+output_videos/*
+!input_videos/.gitkeep
+!output_videos/.gitkeep

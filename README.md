@@ -1,2 +1,45 @@
-# CapCut-Desktop-automation
-The system includes:  Automation Engine: Handles the full editing workflow (Import, 9:16 Ratio, Masking, Scaling, Filters, Captions, and Export). GUI Dashboard: Features live progress, logs, and screen preview. Batch Processing: Automatically watches folders for new videos and processes them in sequence.
+# CapCut Desktop Automation System
+
+## Setup Instructions
+
+1.  **Install Python**: Ensure Python 3.10+ is installed.
+2.  **Install Dependencies**:
+    ```bash
+    pip install -r requirements.txt
+    ```
+3.  **Configure Paths**: Open `config/config.json` and update `capcut_path` to your CapCut installation path.
+4.  **Assets**: The bot requires screenshots of CapCut buttons to function. Run the capture tool to generate them:
+    ```bash
+    python -m src.utils.capture_tool
+    ```
+    Follow the on-screen instructions to hover over each button and press 'S' to capture.
+5.  **Tesseract OCR**: Install [Tesseract OCR](https://github.com/UB-Mannheim/tesseract/wiki) and ensure it's in your system PATH.
+
+## Folder Structure
+
+- `src/engine/`: Automation and Vision logic.
+- `src/gui/`: Dashboard and user controls.
+- `config/`: Configuration files.
+- `input_videos/`: Drop videos here to process.
+- `output_videos/`: Processed videos will appear here.
+
+## How to Run
+
+To start the dashboard:
+```bash
+python -m src.gui.app
+```
+
+## Build Instructions (Windows Executable)
+
+To create a standalone `.exe`:
+```bash
+pip install pyinstaller
+pyinstaller --onefile --windowed src/gui/app.py
+```
+
+## Workflow details
+- **Masking**: Applies a rectangle mask with rounded corners.
+- **Scaling**: Dynamically adjusts to fill the frame.
+- **Filters**: Applies 4K and Cinematic filters.
+- **Captions**: Auto-generates and styles captions (ZY Brief, Size 8).
