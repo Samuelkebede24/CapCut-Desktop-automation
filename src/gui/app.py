@@ -17,6 +17,7 @@ class CapCutGUI(ctk.CTk):
         super().__init__()
 
         self.title("CapCut Desktop Automation")
+        self.attributes("-topmost", True)
         self.geometry("1000x800")
 
         # Load Config
@@ -128,6 +129,7 @@ class CapCutGUI(ctk.CTk):
                     self.progress_bar.set((i + 1) / len(videos))
             else:
                 self.progress_label.configure(text="Status: Waiting for videos...")
+                self.logger.debug(f"Watching for videos in {watch_folder}...")
 
             time.sleep(5)
 

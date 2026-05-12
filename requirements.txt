@@ -6,3 +6,4 @@ pywinauto
 watchdog
 Pillow
 pytest
+keyboard

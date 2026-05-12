@@ -10,7 +10,7 @@
 3.  **Configure Paths**: Open `config/config.json` and update `capcut_path` to your CapCut installation path.
 4.  **Assets**: The bot requires screenshots of CapCut buttons to function. Run the capture tool to generate them:
     ```bash
-    python src/utils/capture_tool.py
+    python -m src.utils.capture_tool
     ```
     Follow the on-screen instructions to hover over each button and press 'S' to capture.
 5.  **Tesseract OCR**: Install [Tesseract OCR](https://github.com/UB-Mannheim/tesseract/wiki) and ensure it's in your system PATH.
@@ -22,6 +22,13 @@
 - `config/`: Configuration files.
 - `input_videos/`: Drop videos here to process.
 - `output_videos/`: Processed videos will appear here.
+
+## How to Run
+
+To start the dashboard:
+```bash
+python -m src.gui.app
+```
 
 ## Build Instructions (Windows Executable)
 

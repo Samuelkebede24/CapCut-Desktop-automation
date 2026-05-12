@@ -190,9 +190,20 @@ class CapCutAutomation:
                     return True
         return False
 
+    def is_capcut_running(self):
+        try:
+            # Check if CapCut process exists
+            return "CapCut.exe" in os.popen('tasklist').read()
+        except:
+            return False
+
     def process_video(self, video_path):
         """Full pipeline for a single video."""
         try:
+            if not self.is_capcut_running():
+                if not self.start_capcut():
+                    return False
+
             filename = os.path.basename(video_path).split('.')[0]
             if not self.create_new_project(): return False
             if not self.import_video(video_path): return False
